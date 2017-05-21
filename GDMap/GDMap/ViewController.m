@@ -7,11 +7,12 @@
 //
 
 #import "ViewController.h"
+#import "FoodTableView.h"
 
-@interface ViewController ()<UITableViewDataSource,UITableViewDelegate>
+@interface ViewController ()<UITableViewDataSource,UITableViewDelegate,FoodTableViewDelegate>
 
 @property(nonatomic,strong) UIButton *bottomButton;
-@property(nonatomic,strong) UITableView *tableView;
+@property(nonatomic,strong) FoodTableView *tableView;
 @property(nonatomic,assign) CGFloat offsetY;
 
 @end
@@ -21,21 +22,46 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor greenColor];
-//    UIView *backView = [[UIView alloc] initWithFrame:self.view.bounds];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    imageView.image = [UIImage imageNamed:@"screen"];
-//    [backView addSubview:imageView];
-//    _tableView.backgroundView = backView;
-    
-    [self.view addSubview:imageView];
+
+    [self setupImageView];
     
     [self.view addSubview:self.tableView];
 }
 
+- (void)setupImageView {
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+    imageView.userInteractionEnabled = YES;
+    
+    imageView.image = [UIImage imageNamed:@"screen"];
+    
+    [self.view addSubview:imageView];
+}
 
+#pragma mark - private
+// 恢复tableView到最初的位置
+- (void)resumeTableView {
+    [UIView animateWithDuration:0.2 animations:^{
+        self.tableView.frame = self.view.bounds;
+    }];
+    [self.bottomButton removeFromSuperview];
+    
+}
+
+// 下移隐藏tableView
+- (void)hiddenTableView {
+    CGFloat screenH = [UIScreen mainScreen].bounds.size.height;
+    [UIView animateWithDuration:0.2 animations:^{
+        self.tableView.frame = CGRectMake(self.tableView.frame.origin.x, screenH, self.tableView.frame.size.width, self.tableView.frame.size.height);
+    }];
+    // 添加底部按钮
+    [self.view addSubview:self.bottomButton];
+}
+
+#pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 50;
 }
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@""];
@@ -51,12 +77,9 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     
-    
-    
     CGFloat curOffsetY = scrollView.contentOffset.y;
     CGFloat screenH = [UIScreen mainScreen].bounds.size.height;
 
-    
     if (curOffsetY > 0.f) {
         return;
     }
@@ -73,16 +96,9 @@
         // curOffsetY < self.offsetY 代表向下滚动
         // curOffsetY < -240.f 代表从初始位置向下滚动
         // curOffsetY > -screenH 代表tableView第一行还未滚动到底部
-        [UIView animateWithDuration:0.2 animations:^{
-            scrollView.frame = CGRectMake(scrollView.frame.origin.x, screenH, scrollView.frame.size.width, scrollView.frame.size.height);
-            
-//            scrollView.contentInset = UIEdgeInsetsMake(screenH, 0, 0, 0);
-//            [scrollView layoutIfNeeded];
-//            [scrollView setNeedsLayout];
-        }];
+        // 下移tableView
+        [self hiddenTableView];
         
-        // 添加底部按钮
-        [self.view addSubview:self.bottomButton];
     } else if (curOffsetY > self.offsetY && curOffsetY < -240.f) { // 底部 -> up原位
         // curOffsetY > self.offsetY 代表向上滚动
         // curOffsetY < -240.f 代表是从底部向上滚动
@@ -104,9 +120,19 @@
     self.offsetY = scrollView.contentOffset.y;
 }
 
-- (UITableView *)tableView {
+#pragma mark - FoodTableViewDelegate
+- (void)didTouchTableView:(FoodTableView *)tableView withLocation:(CGPoint)location {
+    CGPoint locationInView = [tableView convertPoint:location toView:self.view];
+    
+    if (locationInView.y < 240.f && locationInView.y > 0.f) {
+        [self hiddenTableView];
+    }
+}
+
+
+- (FoodTableView *)tableView {
     if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+        _tableView = [[FoodTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
         _tableView.contentInset = UIEdgeInsetsMake(240, 0, 0, 0);
         
 //        UIView *backView = [[UIView alloc] initWithFrame:self.view.bounds];
@@ -117,10 +143,17 @@
 
         _tableView.delegate = self;
         _tableView.dataSource = self;
+        _tableView.touchDelegate = self;
         
         _tableView.backgroundColor = [UIColor clearColor];
-        _tableView.backgroundView = nil;
+        _tableView.backgroundView = [[UIView alloc] initWithFrame:_tableView.bounds];
+        ;
         
+        UIView *clearView = [[UIView alloc] initWithFrame:CGRectMake(0.f, 0.f, _tableView.frame.size.width, 240.f)];
+        clearView.backgroundColor = [UIColor clearColor];
+        UITapGestureRecognizer *tapGes = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hiddenTableView)];
+        [clearView addGestureRecognizer:tapGes];
+        [_tableView.backgroundView addSubview:clearView];
     }
     
     return _tableView;
@@ -139,11 +172,4 @@
     return _bottomButton;
 }
 
-- (void)resumeTableView {
-    [UIView animateWithDuration:0.2 animations:^{
-        self.tableView.frame = self.view.bounds;
-    }];
-    [self.bottomButton removeFromSuperview];
-
-}
 @end

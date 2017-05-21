@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D01780991ED1C38B00C5AE88 /* FoodTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D01780981ED1C38B00C5AE88 /* FoodTableView.m */; };
 		D017F5E51ECF3C5200450AAC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D017F5E41ECF3C5200450AAC /* main.m */; };
 		D017F5E81ECF3C5200450AAC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D017F5E71ECF3C5200450AAC /* AppDelegate.m */; };
 		D017F5EB1ECF3C5200450AAC /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D017F5EA1ECF3C5200450AAC /* ViewController.m */; };
@@ -35,6 +36,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D01780971ED1C38B00C5AE88 /* FoodTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoodTableView.h; sourceTree = "<group>"; };
+		D01780981ED1C38B00C5AE88 /* FoodTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodTableView.m; sourceTree = "<group>"; };
 		D017F5E01ECF3C5200450AAC /* GDMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GDMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D017F5E41ECF3C5200450AAC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		D017F5E61ECF3C5200450AAC /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -105,6 +108,8 @@
 				D017F5E71ECF3C5200450AAC /* AppDelegate.m */,
 				D017F5E91ECF3C5200450AAC /* ViewController.h */,
 				D017F5EA1ECF3C5200450AAC /* ViewController.m */,
+				D01780971ED1C38B00C5AE88 /* FoodTableView.h */,
+				D01780981ED1C38B00C5AE88 /* FoodTableView.m */,
 				D017F5EC1ECF3C5200450AAC /* Main.storyboard */,
 				D017F5EF1ECF3C5200450AAC /* Assets.xcassets */,
 				D017F5F11ECF3C5200450AAC /* LaunchScreen.storyboard */,
@@ -275,6 +280,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D017F5EB1ECF3C5200450AAC /* ViewController.m in Sources */,
+				D01780991ED1C38B00C5AE88 /* FoodTableView.m in Sources */,
 				D017F5E81ECF3C5200450AAC /* AppDelegate.m in Sources */,
 				D017F5E51ECF3C5200450AAC /* main.m in Sources */,
 			);
